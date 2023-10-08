@@ -1,22 +1,10 @@
 const DEBOUNCE_DELAY = 100;
-let lastClickTime = 0;
+let debounceTimer = null;
 
-const containsNotCirillic = (text) => {
+const containsNotCyrillic = (text) => {
   const englishRegex = /[^\u0400-\u04FF\W\d]/;
   return englishRegex.test(text);
 };
-
-const debounce = (func, delay) => {
-  let timer;
-  return function (...args) {
-    const context = this;
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      func.apply(context, args);
-    }, delay);
-  };
-};
-
 
 const clickElementWithAttribute = (inlineTrigger) => {
   const translateTooltip = document.querySelector("deepl-inline-translate-tooltip");
@@ -29,33 +17,31 @@ const clickElementWithAttribute = (inlineTrigger) => {
   }
 };
 
-const debouncedHandleMutations = debounce((inlineTrigger) => {
-  clickElementWithAttribute(inlineTrigger);
-}, DEBOUNCE_DELAY);
+const handleMouseUp = () => {
 
-const observer = new MutationObserver((mutationsList) => {
-  const inlineTrigger = document.querySelector("deepl-inline-trigger");
-  if (!inlineTrigger) return;
-
-  const selection = window.getSelection();
-
-  if (!containsNotCirillic(selection)) {
-    inlineTrigger.remove();
-    return;
+  if (debounceTimer) {
+    clearTimeout(debounceTimer);
   }
 
-  inlineTrigger.style.opacity = 0;
+  debounceTimer = setTimeout(() => {
+    const selection = window.getSelection();
 
-  debouncedHandleMutations(inlineTrigger);
-});
+    if (!selection || selection.isCollapsed) {
+      return;
+    }
 
-const onPageLoad = () => {
-  observer.observe(document, {
-    childList: true,
-    subtree: true,
-    characterData: true,
-  });
+    const selectedText = selection.toString();
+
+    if (!containsNotCyrillic(selectedText)) {
+      return;
+    }
+
+    const inlineTrigger = document.querySelector("deepl-inline-trigger");
+    if (!inlineTrigger) return;
+
+    inlineTrigger.style.opacity = 0;
+    clickElementWithAttribute(inlineTrigger);
+  }, DEBOUNCE_DELAY);
 };
 
-window.addEventListener("load", onPageLoad);
-
+document.addEventListener("mouseup", handleMouseUp);
