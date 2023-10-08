@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "DeepL Helper",
+  "version": "1.0",
+  "description": "Облегчает перевод с помощью расширения DeepL. Не нужно кликать по иконке, убирает перевод кириллицы.",
+  "permissions": ["activeTab"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ],
+  "icons": {
+      "32": "images/icon-32.png",
+      "48": "images/icon-48.png",
+      "64": "images/icon-64.png",
+      "128": "images/icon-128.png"
+  }
+}
+
