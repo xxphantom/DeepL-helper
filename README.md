@@ -29,4 +29,4 @@ DeepL Helper - это маленькое браузерное расширени
 
 - `activeTab`: Позволяет расширению взаимодействовать с текущей активной вкладкой в вашем браузере.
 
-**Обратите внимание**: Перевод осуществляется с помощью расширения DeepL Translate: Reading & writing translator. Убедитесь, что у вас установлено это расширение для правильной работы DeepL Helper.
+**Обратите внимание**: Перевод осуществляется с помощью расширения [DeepL Translate: Reading & writing translator](https://chrome.google.com/webstore/detail/deepl-translate-reading-w/cofdbpoegempjloogbagkncekinflcnj). Убедитесь, что у вас установлено это расширение для правильной работы DeepL Helper.
