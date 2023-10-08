@@ -24,22 +24,19 @@ const handleMouseUp = () => {
   }
 
   debounceTimer = setTimeout(() => {
-    const selection = window.getSelection();
+    const inlineTrigger = document.querySelector("deepl-inline-trigger");
 
-    if (!selection || selection.isCollapsed) {
+    if (!inlineTrigger) {
       return;
     }
 
+    const selection = window.getSelection();
     const selectedText = selection.toString();
 
     if (!containsNotCyrillic(selectedText)) {
       return;
     }
 
-    const inlineTrigger = document.querySelector("deepl-inline-trigger");
-    if (!inlineTrigger) return;
-
-    inlineTrigger.style.opacity = 0;
     clickElementWithAttribute(inlineTrigger);
   }, DEBOUNCE_DELAY);
 };
