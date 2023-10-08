@@ -1,48 +1,39 @@
-// Объявляем переменную для отслеживания времени последнего клика
 const DEBOUNCE_DELAY = 100;
 let lastClickTime = 0;
 
-
-function containsNotCirillic(text) {
+const containsNotCirillic = (text) => {
   const englishRegex = /[^\u0400-\u04FF\W\d]/;
   return englishRegex.test(text);
-}
+};
 
-// Функция debounce для ограничения кликов
-function debounce(func, delay) {
+const debounce = (func, delay) => {
   let timer;
-  return function () {
+  return function (...args) {
     const context = this;
-    const args = arguments;
     clearTimeout(timer);
-    timer = setTimeout(function () {
+    timer = setTimeout(() => {
       func.apply(context, args);
     }, delay);
   };
-}
+};
 
-// Функция, которая будет вызывать событие клика на элементе с заданным атрибутом
-function clickElementWithAttribute(attributeValue) {
-  const inlineTrigger = document.querySelector("deepl-inline-trigger");
+
+const clickElementWithAttribute = (inlineTrigger) => {
   const translateTooltip = document.querySelector("deepl-inline-translate-tooltip");
-
-  const element = document
-    .querySelector("deepl-inline-trigger")
-    ?.shadowRoot?.querySelector(`[data-qa="${attributeValue}"]`);
+  const element = inlineTrigger
+    ?.shadowRoot?.querySelector(`[data-qa="deepl-inline-translate-menu-icon"]`);
 
   if (element && !translateTooltip) {
     element.click();
     inlineTrigger.remove();
   }
-}
+};
 
-// Функция для обработки мутаций DOM с debounce
-const debouncedHandleMutations = debounce(function (mutationsList) {
-  clickElementWithAttribute("deepl-inline-translate-menu-icon");
+const debouncedHandleMutations = debounce((inlineTrigger) => {
+  clickElementWithAttribute(inlineTrigger);
 }, DEBOUNCE_DELAY);
 
-// Создаем объект для отслеживания изменений DOM
-const observer = new MutationObserver(function (mutationsList) {
+const observer = new MutationObserver((mutationsList) => {
   const inlineTrigger = document.querySelector("deepl-inline-trigger");
   if (!inlineTrigger) return;
 
@@ -55,18 +46,16 @@ const observer = new MutationObserver(function (mutationsList) {
 
   inlineTrigger.style.opacity = 0;
 
-  debouncedHandleMutations(mutationsList);
+  debouncedHandleMutations(inlineTrigger);
 });
 
-// Функция, которая будет вызвана после полной загрузки страницы
-function onPageLoad() {
-  // Начинаем отслеживать изменения в DOM
+const onPageLoad = () => {
   observer.observe(document, {
     childList: true,
     subtree: true,
     characterData: true,
   });
-}
+};
 
-// Добавляем слушатель события load
 window.addEventListener("load", onPageLoad);
+
