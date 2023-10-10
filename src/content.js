@@ -34,6 +34,7 @@ const handleMouseUp = () => {
     const selectedText = selection.toString();
 
     if (!containsNotCyrillic(selectedText)) {
+      inlineTrigger.remove();
       return;
     }
 
